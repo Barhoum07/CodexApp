@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mission-interface">
+    <div class="panel briefing-panel">
+        <div class="panel-header">
+            <h3>// BRIEFING: {{ mission.title }}</h3>
+        </div>
+        <div class="panel-content">
+            <div class="lore-text">
+                {{ mission.description }}
+            </div>
+            <div class="knowledge-base">
+                {{ mission.content | safe }}
+            </div>
+            <div class="objective-box">
+                <h4>OBJECTIVE:</h4>
+                <p>{{ mission.task }}</p>
+                <div class="hint-box">
+                    <strong>HINT:</strong> {{ mission.hint }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel editor-panel">
+        <div class="panel-header">
+            <div class="editor-tabs">
+                <button class="tab-btn active" data-lang="html">HTML</button>
+                <button class="tab-btn" data-lang="css">CSS</button>
+                <button class="tab-btn" data-lang="js">JS</button>
+            </div>
+            <button id="run-btn" class="action-btn">RUN</button>
+        </div>
+        <div class="editor-wrapper">
+            <textarea id="html-editor" class="code-editor active" aria-label="HTML code editor"
+                spellcheck="false">{{ mission.starter_code }}</textarea>
+            <textarea id="css-editor" class="code-editor" aria-label="CSS code editor"
+                spellcheck="false">/* CSS */</textarea>
+            <textarea id="js-editor" class="code-editor" aria-label="JavaScript code editor"
+                spellcheck="false">// JavaScript</textarea>
+        </div>
+    </div>
+
+    <div class="panel preview-panel">
+        <div class="panel-header">
+            <h3>// OUTPUT</h3>
+        </div>
+        <div class="preview-wrapper">
+            <iframe id="preview-frame" title="Preview"></iframe>
+            <div id="console-output" class="console-output hidden">
+                <div class="console-header">>> CONSOLE</div>
+                <div id="console-logs"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data for JS -->
+<input type="hidden" id="mission-id" value="{{ mission.id }}">
+
+<!-- Modal -->
+<div id="modal" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="modal-title"></h2>
+        <p id="modal-message"></p>
+        <div class="modal-actions">
+            <button id="modal-close" class="action-btn">ACKNOWLEDGE</button>
+            {% if next_mission %}
+            <a href="/mission/{{ next_mission.id }}" id="next-mission-btn" class="action-btn primary hidden">NEXT
+                MISSION >></a>
+            {% else %}
+            <a href="/" id="home-btn" class="action-btn primary hidden">RETURN TO BASE</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

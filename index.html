@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard">
+    <h1 class="glitch" data-text="MISSION PATH">MISSION PATH</h1>
+
+    {% for key, module in curriculum.items() %}
+    <div class="module-section">
+        <h2 class="module-title">{{ module.title }}</h2>
+        <p class="module-description">{{ module.description }}</p>
+
+        <div class="roadmap-container">
+            {% for mission in module.missions %}
+            <!-- Calculate position for zig-zag effect -->
+            <!-- Cycle: Center -> Right -> Center -> Left -> Center ... -->
+            {% set pos_cycle = loop.index0 % 4 %}
+            {% if pos_cycle == 0 %}
+            {% set pos_class = 'center' %}
+            {% elif pos_cycle == 1 %}
+            {% set pos_class = 'right' %}
+            {% elif pos_cycle == 2 %}
+            {% set pos_class = 'center' %}
+            {% else %}
+            {% set pos_class = 'left' %}
+            {% endif %}
+
+            <div class="level-node-wrapper {{ pos_class }}">
+                <div class="node-group">
+                    <a href="{{ '/mission/' + mission.id if mission.status != 'locked' else '#' }}"
+                        class="level-node {{ mission.status }}" data-title="{{ mission.title }}"
+                        title="{{ mission.title }}" aria-label="{{ mission.title }} - {{ mission.status }}">
+                        <div class="node-icon">
+                            {% if mission.status == 'completed' %}
+                            ✓
+                            {% elif mission.status == 'locked' %}
+                            🔒
+                            {% else %}
+                            ⚡
+                            {% endif %}
+                        </div>
+                    </a>
+                    <div class="level-label">{{ mission.title }}</div>
+                </div>
+            </div>
+
+            {% if not loop.last %}
+            <!-- Determine next position -->
+            {% set next_cycle = (loop.index0 + 1) % 4 %}
+
+            <div class="path-segment">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                    {% if pos_cycle == 0 %}
+                    <!-- Center to Right -->
+                    <path d="M50,0 C50,50 75,50 75,100" vector-effect="non-scaling-stroke" />
+                    {% elif pos_cycle == 1 %}
+                    <!-- Right to Center -->
+                    <path d="M75,0 C75,50 50,50 50,100" vector-effect="non-scaling-stroke" />
+                    {% elif pos_cycle == 2 %}
+                    <!-- Center to Left -->
+                    <path d="M50,0 C50,50 25,50 25,100" vector-effect="non-scaling-stroke" />
+                    {% else %}
+                    <!-- Left to Center -->
+                    <path d="M25,0 C25,50 50,50 50,100" vector-effect="non-scaling-stroke" />
+                    {% endif %}
+                </svg>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
